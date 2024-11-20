@@ -87,3 +87,24 @@ def get_tet_interpolated_particles(Ndim,p3d, split=10):
                 newp[m+s::Nnppp,i] = orig.reshape(Np,3)[:,i] + \
                     ((ro[s::Nnppp,0]*a[:,i]+ro[s::Nnppp,1]*b[:,i]+ro[s::Nnppp,2]*c[:,i]))
     return newp
+
+
+
+def pysco_displacement_field_and_initial_coordinates(p, box=[0,1]):
+  bmin = box[0]
+  bmax = box[1]
+  bh = (bmax-bmin)/2
+  bl = bmax - bmin
+  
+  Ndim = np.int64(p.shape[0]**.333333334) # assume we had Ndim**3 particles in a grid on cubic box
+  x = bl*(0.5+np.arange(Ndim))/(Ndim)
+  xg = np.meshgrid(x,x,x, indexing='ij')
+  pl = np.zeros_like(p)
+  ds = np.zeros_like(p)
+  for i in range(3): # define 
+    pl[:,i] = np.ravel(xg[i])
+    ds[:,i] = p[:,i] - pl[:,i]
+  for i in range(3):
+    ds[:,i][ds[:,i] < -bh] += bl
+    ds[:,i][ds[:,i] >  bh] -= bl
+  return ds, pl # returns displacement field ds and Lagrangian (initial) coordinates
