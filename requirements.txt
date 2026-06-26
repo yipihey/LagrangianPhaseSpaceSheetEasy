@@ -1,0 +1,7 @@
+numpy>=1.22
+scipy>=1.8
+matplotlib>=3.5
+# optional but strongly recommended: enables the JIT-compiled, parallel backend
+numba>=0.56
+# for running the tests
+pytest>=7.0
